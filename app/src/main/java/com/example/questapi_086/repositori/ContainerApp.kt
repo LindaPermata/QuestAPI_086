@@ -1,5 +1,7 @@
 package com.example.questapi_086.repositori
 
+import android.app.Application
+import com.example.questapi_086.apiservice.ServiceApiSiswa
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -33,4 +35,21 @@ class DefaultContainerApp : ContainerApp{
         )
         .client(klien)
         .build()
+
+    private val retrofitService : ServiceApiSiswa by lazy {
+        retrofit.create(ServiceApiSiswa::class.java)
+    }
+
+    override val repositorySiswa: RepositoryDataSiswa by lazy {
+        JaringanRepositoryDataSiswa(retrofitService)
+    }
+
+}
+
+class AplikasiDataSiswa : Application() {
+    lateinit var containerApp: ContainerApp
+    override fun onCreate() {
+        super.onCreate()
+        containerApp = DefaultContainerApp()
+    }
 }
