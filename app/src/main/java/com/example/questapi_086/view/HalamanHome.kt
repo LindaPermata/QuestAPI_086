@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,7 +53,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -66,8 +66,7 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = navigateToItemEntry,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.padding_large))
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large))
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -80,7 +79,7 @@ fun HomeScreen(
             statusUiSiswa = viewModel.listSiswa,
             onSiswaClick = navigateToItemUpdate,
             retryAction = viewModel::loadSiswa,
-            modifier = Modifier
+            modifier = modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         )
@@ -100,14 +99,12 @@ fun HomeBody(
     ) {
         when (statusUiSiswa) {
             is StatusUiSiswa.Loading -> LoadingScreen()
-            is StatusUiSiswa.Success -> DataSiswaList(
-                dataSiswa = statusUiSiswa.listSiswa,
-                onSiswaClick = onSiswaClick
-            )
-            is StatusUiSiswa.Error -> ErrorScreen(
-                retryAction = retryAction,
-                modifier = Modifier.fillMaxSize()
-            )
+            is StatusUiSiswa.Success ->
+                DaftarSiswa(
+                    dataSiswa = statusUiSiswa.listSiswa,
+                    onSiswaClick = onSiswaClick
+                )
+            is StatusUiSiswa.Error -> ErrorScreen(retryAction)
         }
     }
 }
@@ -139,7 +136,7 @@ fun ErrorScreen(
 }
 
 @Composable
-fun DataSiswaList(
+fun DaftarSiswa(
     dataSiswa: List<DataSiswa>,
     onSiswaClick: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -167,22 +164,26 @@ fun ItemSiswa(
     ) {
         Column(
             modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_large)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+                .padding(dimensionResource(id = R.dimen.padding_large))
         ) {
-            Text(
-                text = siswa.nama,
-                style = MaterialTheme.typography.titleLarge
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Icon(
-                imageVector = Icons.Default.Phone,
-                contentDescription = null
-            )
-            Text(
-                text = siswa.telpon,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+            ) {
+                Text(
+                    text = siswa.nama,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.Phone,
+                    contentDescription = null
+                )
+                Text(
+                    text = siswa.telpon,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
             Text(
                 text = siswa.alamat,
                 style = MaterialTheme.typography.titleMedium
