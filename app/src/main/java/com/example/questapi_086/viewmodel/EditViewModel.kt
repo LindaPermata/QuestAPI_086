@@ -32,12 +32,14 @@ class EditViewModel(
                 .toUiStateSiswa(true)
         }
     }
+
     fun updateUiState(detailSiswa: DetailSiswa) {
         uiStateSiswa = UIStateSiswa(
             detailSiswa = detailSiswa,
             isEntryValid = validasiInput(detailSiswa)
         )
     }
+
     private fun validasiInput(
         uiState: DetailSiswa = uiStateSiswa.detailSiswa
     ): Boolean {
@@ -47,6 +49,7 @@ class EditViewModel(
                     telpon.isNotBlank()
         }
     }
+
     suspend fun editSatuSiswa() {
         if (validasiInput(uiStateSiswa.detailSiswa)) {
             val call: Response<Void> =
@@ -55,3 +58,11 @@ class EditViewModel(
                     uiStateSiswa.detailSiswa.toDataSiswa()
                 )
 
+            if (call.isSuccessful) {
+                println("Update Sukses : ${call.message()}")
+            } else {
+                println("Update Error : ${call.errorBody()}")
+            }
+        }
+    }
+}
