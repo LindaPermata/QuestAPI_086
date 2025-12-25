@@ -47,4 +47,11 @@ class EditViewModel(
                     telpon.isNotBlank()
         }
     }
+    suspend fun editSatuSiswa() {
+        if (validasiInput(uiStateSiswa.detailSiswa)) {
+            val call: Response<Void> =
+                repositoryDataSiswa.editSatuSiswa(
+                    idSiswa,
+                    uiStateSiswa.detailSiswa.toDataSiswa()
+                )
 
